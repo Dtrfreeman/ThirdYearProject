@@ -1,0 +1,6 @@
+function[DHmats] =generateDHMatrices(thetasDegrees,dist,radius,angleDegrees)
+
+DHmats=eye(4,4,length(thetaDegrees));
+DHmats(:,:,i)=
+
+end
