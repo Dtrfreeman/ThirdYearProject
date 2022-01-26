@@ -57,24 +57,21 @@ samplingRate=1/(4*samplesPerRandomWaypoint);
  weights = [1,1,1,1,1,1];
  initTargetPose=desiredTransforms(:,:,1);
  ik=inverseKinematics('RigidBodyTree',robotRBT);
-
+ [configSln,solInfo]=ik('tool0',initTargetPose,weights,q0);
  hold off;
 
 
 %give a demo rendering of what these actions should look like
 
-tic;
-predictedEndTime=0;
-
-curConfiguration=ik('tool0',initTargetPose,weights,q0);
-
+startTime=tic;
+predictedEndTime;
+prevConfiguration=configSln;
 for sampInd=1:testSampNum
-    prevConfiguration=curConfiguration;
-   curConfiguration=ik('tool0',desiredTransforms(:,:,sampInd),weights,prevConfiguration);
-   desiredConfigurations(:,sampInd)=curConfiguration;
-   
-   predictedEndTime=(toc)*(testSampNum-sampInd)/sampInd;
-   fprintf("%u / %u, %f percent, %f seconds in, should take %f seconds",sampInd,testSampNum,100*sampInd/testSampNum,toc,predictedEndTime);
+   [configSln,solInfo]=ik('tool0',desiredTransforms(:,:,sampInd),weights,prevConfiguration);
+   desiredConfigurations(:,sampInd)=configSln;
+   prevConfiguration=configSln;
+   predictedEndTime=(tic-startTime)*(testSampNum-sampInd)/sampInd;
+   fprintf("%u / %u, %f percent, %f seconds in, should take %f seconds",sampInd,testSampNum,100*sampInd/testSampNum,tic,predictedEndTime);
 
 end
 fprintf("Calculated ideal configurations for each desired transformation");
