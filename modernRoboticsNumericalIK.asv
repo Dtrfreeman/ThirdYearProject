@@ -1,0 +1,17 @@
+
+
+initialGuess=zeros(1,6)
+prevGuess=initialGuess;
+  for i = 1:6
+    Slist(1:6,i)=jointToScrewAxis(subs(jointTf(:,:,i),thetas,[0,0,0,0,0,0]),initialGuess,thetas)
+  end
+   
+for sample = 1:1000
+ 
+   
+    [thetalist, success] = IKinSpace(Slist, desiredTransformations(:,:,sample), T, initialGuess, eomg, ev)
+    prevGuess=thetalist(1:6,1);
+    foundConfigurationList=thetalist(1:6,1);
+    successList(sample)=success;
+end
+
